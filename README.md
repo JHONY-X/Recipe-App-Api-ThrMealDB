@@ -3,9 +3,9 @@
 This is a Flutter application built for the **Mobile Application Development (Unit 4)** assignment at Addis Ababa University.
 
 ## Student Information
-- **Name:** [Your Name]
-- **Student ID:** [Your Student ID]
-- **Track:** TRACK C — Recipe Browser App (API: TheMealDB)
+- Name: ERMIAS DEREJE
+- Student ID: ATE/4952/15
+
 
 ## Project Description
 The Recipe Browser App allows users to explore various meal categories, browse meals within those categories, and view detailed recipe information including ingredients, measurements, instructions, and a video tutorial link.
