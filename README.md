@@ -1,8 +1,5 @@
 # www.GLOBAL-MENU.COM - Recipe Browser App
 
-![App QR Code](app_qr_code.png)
-
-
 This is a Flutter application built for the **Mobile Application Development (Unit 4)** assignment at Addis Ababa University.
 
 ## Student Information
