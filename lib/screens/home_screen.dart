@@ -23,7 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadCategories() {
-    _categoriesStream = _apiService.fetchCategoriesStream();
+    setState(() {
+      _categoriesStream = _apiService.fetchCategoriesStream();
+    });
   }
 
   @override

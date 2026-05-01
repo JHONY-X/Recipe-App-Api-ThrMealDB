@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../models/meal.dart';
 import '../models/meal_category.dart';
@@ -11,10 +10,9 @@ import 'api_response.dart';
 class MealApiService {
   final String _baseUrl = 'www.themealdb.com';
   final Duration _timeout = const Duration(seconds: 10);
-  final Map<String, String> _headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
+  // Headers are omitted for GET requests to avoid CORS preflight issues on Web.
+  // TheMealDB API supports simple GET requests without custom headers.
+
 
   final CacheManager _cache = CacheManager();
 
@@ -22,7 +20,7 @@ class MealApiService {
     if (response.statusCode != 200) {
       throw ApiException(
         statusCode: response.statusCode,
-        message: 'Server error: ${response.reasonPhrase}',
+        message: 'Server error: ${response.statusCode} ${response.reasonPhrase ?? ""}',
       );
     }
   }
@@ -48,7 +46,7 @@ class MealApiService {
     try {
       final uri = Uri.https(_baseUrl, '/api/json/v1/1/categories.php');
       final response = await http
-          .get(uri, headers: _headers)
+          .get(uri)
           .timeout(_timeout);
 
       _checkResponse(response);
@@ -59,15 +57,12 @@ class MealApiService {
       return categoriesJson
           .map((json) => MealCategory.fromJson(json as Map<String, dynamic>))
           .toList();
-    } on SocketException {
-      throw Exception('No internet connection');
-    } on TimeoutException {
-      throw Exception('Request timed out. Please try again.');
-    } on FormatException {
-      throw Exception('Unexpected data format received');
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw Exception('An unexpected error occurred: $e');
+      if (e is TimeoutException) {
+        throw Exception('Request timed out. Please try again.');
+      }
+      throw Exception('Network error or unexpected issue occurred: $e');
     }
   }
 
@@ -92,7 +87,7 @@ class MealApiService {
     try {
       final uri = Uri.https(_baseUrl, '/api/json/v1/1/filter.php', {'c': category});
       final response = await http
-          .get(uri, headers: _headers)
+          .get(uri)
           .timeout(_timeout);
 
       _checkResponse(response);
@@ -103,15 +98,12 @@ class MealApiService {
       return mealsJson
           .map((json) => Meal.fromJson(json as Map<String, dynamic>))
           .toList();
-    } on SocketException {
-      throw Exception('No internet connection');
-    } on TimeoutException {
-      throw Exception('Request timed out. Please try again.');
-    } on FormatException {
-      throw Exception('Unexpected data format received');
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw Exception('An unexpected error occurred: $e');
+      if (e is TimeoutException) {
+        throw Exception('Request timed out. Please try again.');
+      }
+      throw Exception('Network error or unexpected issue occurred: $e');
     }
   }
 
@@ -123,7 +115,7 @@ class MealApiService {
     try {
       final uri = Uri.https(_baseUrl, '/api/json/v1/1/lookup.php', {'i': mealId});
       final response = await http
-          .get(uri, headers: _headers)
+          .get(uri)
           .timeout(_timeout);
 
       _checkResponse(response);
@@ -138,15 +130,12 @@ class MealApiService {
       final meal = Meal.fromJson(mealsJson.first as Map<String, dynamic>);
       _cache.save(cacheKey, meal);
       return meal;
-    } on SocketException {
-      throw Exception('No internet connection');
-    } on TimeoutException {
-      throw Exception('Request timed out. Please try again.');
-    } on FormatException {
-      throw Exception('Unexpected data format received');
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw Exception('An unexpected error occurred: $e');
+      if (e is TimeoutException) {
+        throw Exception('Request timed out. Please try again.');
+      }
+      throw Exception('Network error or unexpected issue occurred: $e');
     }
   }
 
@@ -154,7 +143,7 @@ class MealApiService {
     try {
       final uri = Uri.https(_baseUrl, '/api/json/v1/1/search.php', {'s': query});
       final response = await http
-          .get(uri, headers: _headers)
+          .get(uri)
           .timeout(_timeout);
 
       _checkResponse(response);
@@ -165,15 +154,12 @@ class MealApiService {
       return mealsJson
           .map((json) => Meal.fromJson(json as Map<String, dynamic>))
           .toList();
-    } on SocketException {
-      throw Exception('No internet connection');
-    } on TimeoutException {
-      throw Exception('Request timed out. Please try again.');
-    } on FormatException {
-      throw Exception('Unexpected data format received');
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw Exception('An unexpected error occurred: $e');
+      if (e is TimeoutException) {
+        throw Exception('Request timed out. Please try again.');
+      }
+      throw Exception('Network error or unexpected issue occurred: $e');
     }
   }
 }

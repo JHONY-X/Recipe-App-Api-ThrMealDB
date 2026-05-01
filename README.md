@@ -3,8 +3,9 @@
 This is a Flutter application built for the **Mobile Application Development (Unit 4)** assignment at Addis Ababa University.
 
 ## Student Information
-- Name: ERMIAS DEREJE
-- Student ID: ATE/4952/15
+- **Name:** ERMIAS DEREJE
+- **Student ID:** ATE/4952/15
+- **Task:** TASK C — Recipe Browser App (API: TheMealDB)
 
 
 ## Project Description

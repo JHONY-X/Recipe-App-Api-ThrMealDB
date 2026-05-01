@@ -24,7 +24,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   void _loadMeals() {
-    _mealsStream = _apiService.fetchMealsByCategoryStream(widget.categoryName);
+    setState(() {
+      _mealsStream = _apiService.fetchMealsByCategoryStream(widget.categoryName);
+    });
   }
 
   @override
