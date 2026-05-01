@@ -15,7 +15,7 @@ class RecipeApp extends StatelessWidget {
     const luxuryOffWhite = Color(0xFFF8F9FA);
 
     return MaterialApp(
-      title: 'www.GLOBAL-MENU.COM',
+      title: 'WWW.GLOBAL-MENU.COM',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
