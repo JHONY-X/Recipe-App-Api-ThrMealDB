@@ -101,7 +101,7 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, color: Colors.red, size: 60),
+              Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error, size: 60),
               const SizedBox(height: 16),
               Text(_errorMessage!, textAlign: TextAlign.center),
               const SizedBox(height: 16),

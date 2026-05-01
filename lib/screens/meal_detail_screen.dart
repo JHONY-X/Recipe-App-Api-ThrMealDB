@@ -89,8 +89,8 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                             ),
                             if (meal.strYoutube != null && meal.strYoutube!.isNotEmpty)
                               IconButton(
-                                icon: const Icon(Icons.play_circle_fill,
-                                    color: Colors.red, size: 40),
+                                icon: Icon(Icons.play_circle_fill,
+                                    color: Theme.of(context).colorScheme.secondary, size: 40),
                                 onPressed: () => _launchYoutube(meal.strYoutube!),
                               ),
                           ],
@@ -166,7 +166,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, color: Colors.red, size: 60),
+            Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error, size: 60),
             const SizedBox(height: 16),
             Text(
               errorMessage,
