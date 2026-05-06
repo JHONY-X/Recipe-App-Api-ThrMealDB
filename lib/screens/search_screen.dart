@@ -28,16 +28,23 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void _onSearchChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
+    
+    if (query.isEmpty) {
+      setState(() {
+        _searchResults = [];
+        _isLoading = false;
+        _errorMessage = null;
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
     _debounce = Timer(const Duration(milliseconds: 400), () {
-      if (query.isNotEmpty) {
-        _performSearch(query);
-      } else {
-        setState(() {
-          _searchResults = [];
-          _isLoading = false;
-          _errorMessage = null;
-        });
-      }
+      _performSearch(query);
     });
   }
 
@@ -81,13 +88,13 @@ class _SearchScreenState extends State<SearchScreen> {
           onChanged: _onSearchChanged,
         ),
       ),
-      body: Column(
+      body: Stack(
         children: [
+          _buildContent(),
           if (_isLoading)
-            const LinearProgressIndicator(),
-          Expanded(
-            child: _buildContent(),
-          ),
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
         ],
       ),
     );

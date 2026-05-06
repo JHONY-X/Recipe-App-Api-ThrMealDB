@@ -61,23 +61,16 @@ class _HomeScreenState extends State<HomeScreen> {
             return Column(
               children: [
                 if (response.isFromCache)
-                  Container(
-                    color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.cached, size: 16, color: Theme.of(context).colorScheme.secondary),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Showing cached data...',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Center(
+                      child: Chip(
+                        avatar: Icon(Icons.cached, size: 16, color: Theme.of(context).colorScheme.onSecondaryContainer),
+                        label: const Text('Cached Data'),
+                        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                        side: BorderSide.none,
+                        visualDensity: VisualDensity.compact,
+                      ),
                     ),
                   ),
                 Expanded(

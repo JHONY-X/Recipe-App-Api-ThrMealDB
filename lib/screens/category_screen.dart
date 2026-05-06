@@ -16,6 +16,8 @@ class CategoryScreen extends StatefulWidget {
 class _CategoryScreenState extends State<CategoryScreen> {
   final MealApiService _apiService = MealApiService();
   late Stream<ApiResponse<List<Meal>>> _mealsStream;
+  int _currentPage = 1;
+  final int _pageSize = 10;
 
   @override
   void initState() {
@@ -50,87 +52,105 @@ class _CategoryScreenState extends State<CategoryScreen> {
             return Column(
               children: [
                 if (response.isFromCache)
-                  Container(
-                    color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.cached, size: 16, color: Theme.of(context).colorScheme.secondary),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Showing cached data...',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Center(
+                      child: Chip(
+                        avatar: Icon(Icons.cached, size: 16, color: Theme.of(context).colorScheme.onSecondaryContainer),
+                        label: const Text('Cached Data'),
+                        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                        side: BorderSide.none,
+                        visualDensity: VisualDensity.compact,
+                      ),
                     ),
                   ),
                 Expanded(
-                  child: GridView.builder(
+                  child: ListView(
                     padding: const EdgeInsets.all(12),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 0.8,
-                    ),
-                    itemCount: meals.length,
-                    itemBuilder: (context, index) {
-                      final meal = meals[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MealDetailScreen(
-                                mealId: meal.idMeal,
-                                mealName: meal.strMeal,
+                    children: [
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 0.8,
+                        ),
+                        itemCount: (meals.length < _currentPage * _pageSize)
+                            ? meals.length
+                            : _currentPage * _pageSize,
+                        itemBuilder: (context, index) {
+                          final meal = meals[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MealDetailScreen(
+                                    mealId: meal.idMeal,
+                                    mealName: meal.strMeal,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Card(
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(12),
+                                      ),
+                                      child: Image.network(
+                                        meal.strMealThumb,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) =>
+                                            const Icon(Icons.broken_image),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      meal.strMeal,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           );
                         },
-                        child: Card(
-                          elevation: 3,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(12),
-                                  ),
-                                  child: Image.network(
-                                    meal.strMealThumb,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) =>
-                                        const Icon(Icons.broken_image),
-                                  ),
-                                ),
+                      ),
+                      if (meals.length > _currentPage * _pageSize)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  _currentPage++;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  meal.strMeal,
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
+                              child: const Text('Load More'),
+                            ),
                           ),
                         ),
-                      );
-                    },
+                    ],
                   ),
                 ),
               ],
